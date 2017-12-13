@@ -4,6 +4,8 @@
 
 Nysocks binds [kcp](https://github.com/skywind3000/kcp) and [libuv](https://github.com/libuv/libuv) to provide a tcp tunnel in nodejs.
 
+    Nysocks is in an early stage. Please submit PRs or issues to help us improve it if you like it!
+
 Proxy tests from a Linode instance(Tokyo 2, JP) where 10% packet loss always happens when trasmission data from to China mainland:
 
 **tcp proxy:**
@@ -20,7 +22,7 @@ Proxy tests from a Linode instance(Tokyo 2, JP) where 10% packet loss always hap
 
 ## How it works
 
-![work](https://cdn.rawgit.com/oyyd/nysocks/f1f82062/imgs/work.png)
+![work](https://cdn.rawgit.com/oyyd/nysocks/faae8240/imgs/work.png)
 
 **protocol(unstable):**
 
@@ -51,25 +53,41 @@ npm i nysocks -g
 
 ## Usage
 
-In your server, create your `config.json` file like [this](#config) and start:
+#### 1. Create server service
+
+In your server, start nysocks with `server` command:
 
 ```
-nysocks server -c config.json
+nysocks server -p 20000 -k YOUR_PASSWORD -m fast
 ```
 
-In your client, create a same `config.json` file and start:
+#### 2. Create client service
+
+In your client, start nysocks with `client` command to create a tunnel client that will connect to your server and provide proxy service:
+
+```
+nysocks client -a YOUR_SERVER_HOST -p 20000 -k YOUR_PASSWORD -m fast
+```
+
+Nysocks will start a SOCKS5 service to tunnel your tcp connections. Now you can [utilize the SOCKS5 service](https://github.com/oyyd/nysocks#how-to-utilize-the-socks5-service) (default port `1080`). A [PAC](https://en.wikipedia.org/wiki/Proxy_auto-config) file server will also be served(default port `8090`) for convenience.
+
+#### 3. Use `config.json`
+
+You can create a `config.json` file like [this](#config) that containing your configs to avoid verbose cli options:
 
 ```
 nysocks client -c config.json
 ```
 
-Nysocks will start a SOCKS5 service to tunnel your tcp connections. A PAC file server will also be served(default port `8090`).
+#### 4. Use daemons
 
 Add `-d` options if you want to run under daemons([pm2](http://pm2.keymetrics.io/)):
 
 ```
 nysocks client -d restart -c config.json
 ```
+
+#### 5. Check other options
 
 Modify your options in the CLI. See other options here:
 
@@ -123,6 +141,7 @@ Use chrome extensions like [SwitchyOmega](https://github.com/FelisCatus/SwitchyO
 
 - [kcptun](https://github.com/xtaci/kcptun) - A Secure Tunnel Based On KCP with N:M Multiplexing
 - [kcp](https://github.com/skywind3000/kcp) - A Fast and Reliable ARQ Protocol
+- [C++ and Node.js Integration](http://scottfrees.com/ebooks/nodecpp/)
 
 ## LICENSE
 

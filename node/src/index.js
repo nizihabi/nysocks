@@ -108,7 +108,7 @@ export function createClient(config) {
       currentClients.managerClient = managerClient
       currentClients.socksServer = socksServer
       // eslint-disable-next-line
-      managerClient.on('close', onClose)
+      managerClient.on('close', closeAndTryRecreate)
     }).catch(err => {
       // Create client failed
       setTimeout(() => {
@@ -117,7 +117,7 @@ export function createClient(config) {
     })
   }
 
-  const onClose = () => {
+  const closeAndTryRecreate = () => {
     logger.info('client disconnect')
 
     free()
@@ -135,7 +135,7 @@ export function createClient(config) {
     const { ip: localIP } = networkMonitor
 
     if (localIP && currentClients.connectState !== 1) {
-      recreate()
+      closeAndTryRecreate()
     }
   })
 
@@ -206,8 +206,8 @@ export function createServerRouter(config) {
       const serverConfig = Object.assign({}, config, {
         serverPort: 0,
       })
-
       const server = createServer(serverConfig, () => {
+        // TODO:
         // on close
         freeManager(server.managerServer)
         router.onServerClose(options)
